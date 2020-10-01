@@ -1,10 +1,9 @@
 import Vue from 'vue'
-import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 //import http from 'vuetest/api'
 
-//Vue.config.productionTip = false;
+Vue.config.productionTip = false
 
 //Vue.prototype.$http = http;   // 添加原型方法，这样创建的对象就自带该方法了。
 
@@ -13,10 +12,11 @@ import router from './router'
 //     render: h => h(App)
 // }).$mount("#app");
 
-// createApp(App).use(
-//     router
-// ).mount('#app')
-createApp(App).use({
+new Vue({
+    el: '#app',
     router,
     render: h => h(App)
-}).mount('#app')
+    // components: {
+    //     App
+    // }
+})

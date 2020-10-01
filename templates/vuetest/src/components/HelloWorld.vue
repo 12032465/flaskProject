@@ -31,32 +31,14 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
-  data(){
-    return{
-      msg: ''
-    };
-  },
-  methods:{
-    getMessage(){
-        const path = 'http://127.0.0.1:5000/';
-        axios
-          .get(path)
-          .then(res => {
-            console.log(res);
-            this.msg = res.data;
-          })
-          .catch(error => {
-            console.error(error);
-          });
+  name: 'HelloWorld',
+  data () {
+    return {
+      msg: 'Welcome to Your Vue.js App'
     }
-  },
-  created(){
-    this.getMessage();
   }
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

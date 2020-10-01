@@ -1,47 +1,18 @@
 <template>
-  <div id="nav">
-    <h1>{{ msg }}</h1>
-    <router-link to="{name: 'Home'}">Home</router-link> |
-    <router-link to="{name: 'About'}">About</router-link>
-  </div>
-  <router-view class = "view"></router-view>
+    <div id="app">
+        <div id="nav">
+            <router-link to="/home">Home</router-link> |
+            <router-link to="/about">About</router-link>
+        </div>
+        <router-view/>
+    </div>
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
-  data(){
-    return{
-      msg: ''
-    };
-  },
-  methods:{
-    getMassage(){
-    const path = 'http://127.0.0.1:5000/';
-        axios.get("/api/test").then((data)=>{
-        alert(data)
-  })
-  },
-  // methods:{
-  //  getMessage(){
-  //      const path = 'http://127.0.0.1:5000/';
-  //      axios
-  //        .get(path)
-  //        .then(res => {
-  //          console.log(res.data);
-   //         this.msg = res.data;
-   //       })
-   //       .catch(error => {
-   //         console.error(error);
-   //       });
-   // }
-  //},
-  created(){
-    this.getMessage();
-  }
-  }
-};
+  name: 'app'
+}
+
 </script>
 
 <style>
