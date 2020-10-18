@@ -21,6 +21,7 @@
         top: 50%;
         left: 50%;
         margin-top: -300px;
+        //margin-top: -100px;
         margin-left: -250px;
         transition: all 1s;
         -moz-transition: all 1s; /* Firefox 4 */
@@ -51,18 +52,18 @@
 <template>
     <div id="search_module">
         <div id="loginOut" v-show = "isLogin">
-            <button @click="loginOut" type="submit" id="loginOutBtn">loginOut</button>
+            <v-button @click="loginOut" type="warning" id="loginOutBtn">loginOut</v-button>
         </div>
         <div class='search'>
             <div id="searchByName">
                 <span>component_name:</span>
-                <input type="text" name="component_name" id="component_name" v-model="component_name">
+                <input type="component_name" name="component_name" id="component_name" v-model="component_name">
                 <button @click="getInfo" type="submit" id="getInfoBtn" value=search_module>submit</button>
                 </br>
                 </br>
                 </br>
                 <span>moudle:</span>
-                <textarea class="output" name="output" rows="6" cols="41"></textarea>
+                <textarea id="output" name="output" rows="6" cols="37"></textarea>
                 <svg></svg>
             </div>
         </div>
@@ -87,12 +88,19 @@ export default {
             axios.post(`http://localhost:5000/api/search_module`, params)
                 .then((ret) => {
                     var jsonObj = JSON.parse(JSON.stringify(ret));
-                    console.log(JSON.stringify(jsonObj));//debugger
+                    console.log(JSON.stringify(jsonObj));debugger
                     this.info = ret.status
-                    console.log(ret)
-                    this.dataset = ret.data
-                    for (var i = 0; i < this.dataset.length; i++) {
-                        this.dataset[i]["value"] = 1
+                    if(ret.data.length ===0){
+                        alert("您的输入有误，请重新输入！")
+                    }
+                    else{
+                        this.dataset = ret.data
+                        var content = document.getElementById("output")
+                        content.value = ""
+                        for (var i = 0; i < this.dataset.length; i++) {
+                            this.dataset[i]["value"] = 1
+                            content.value = content.value + this.dataset[i].belonged_equipment + " "
+                        }
                     }
                 })
                 .catch(function (error) {
@@ -102,10 +110,12 @@ export default {
         drawPie(){
             document.querySelector('svg').innerHTML = '';
             var svg = d3.select('svg');
-            //debugger
-            //var color = d3.scale.category10();
-            var color = d3.schemeCategory10;
-            console.log(color)
+            //debugge
+            //var color = d3.schemeCategory10;
+            function getColor(idx){
+                var color = ['#A9E2F3', '#58D3F7', '#58ACFA', '#2E9AFE', '#0080FF', '#5858FA', '#AC58FA', '#FA58F4']
+                return color[idx % color.length];
+            }
             // 这样的值是不能直接绘制图形的，例如绘制饼图的一部分，需要知道一段弧度的起始位置和终止角度，这些值都不存在于数组的dataset中，因此需要用到布局
             // 布局的作用就是：计算出适合于作图的数据
             var pie = d3.pie()
@@ -115,7 +125,6 @@ export default {
 	        });
 	    //debugger
         var piedata = pie(this.dataset)
-        //var piedata = pie(dataset)
         console.log(piedata)//5个整数倍转换成了5个对象，每个对象都有：起始角度（startAngle）和终止角度（endAngle），还有原数据（属性名称为 data）。这些都是绘图需要的数据。
         // 绘制图形
         // 为了根据转换后的piedata绘图，还需要一样工具：生成器
@@ -134,7 +143,8 @@ export default {
         // 接下来给每个g添加path
         arcs.append('path')
             .attr('fill', function (d, i) {
-                return color[i]
+                //return color[i]
+                return getColor(i);
             })
             .attr('d', function (d) {
                 return arc(d)
@@ -162,7 +172,8 @@ export default {
         }
     },
     created() {
-        if(this.$cookies.isKey("username") === ""){
+        if(this.$cookies.isKey("username") === false){
+            this.isLogin = false
             this.$router.push({path: '/login'});
         }
         this.getInfo()
