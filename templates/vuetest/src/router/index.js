@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '../components/HelloWorld.vue'
 import Home from '../components/Home.vue'
-import About from '../components/About.vue'
+import SearchModule from '../components/SearchModule.vue'
+import PieChart from '../components/PieChart.vue'
 import NotFound from '../components/NotFound.vue'
 //
 // const routerOptions = [
@@ -29,18 +30,56 @@ import NotFound from '../components/NotFound.vue'
 //   routes
 // })
 const routerOptions = [
-  { path: '/', component: 'HelloWorld' },
-  { path: '/home', component: 'Home' },
-  { path: '/about', component: 'About' },
-  { path: '*', component: 'NotFound' }
+    {path: '/', component: 'HelloWorld'},
+    {path: '/home', component: 'Home'},
+    {path: '/search_module', component: 'SearchModule', meta:{requireAuth:true }},
+    {path: '/login', component: 'Login'},
+    {path: '/particles', component: 'Particles'},
+    {path: '/register', component: 'Register'},
+    {path: '/pie_chart', component: 'PieChart'},
+    {path: '*', component: 'NotFound'}
 ]
 const routes = routerOptions.map(route => {
-  return {
-    ...route,
-    component: () => import(`@/components/${route.component}.vue`)
-  }
+    return {
+        ...route,
+        component: () => import(`@/components/${route.component}.vue`)
+    }
+})
+const router = new Router({
+    rous: [
+        {path: '/', component: 'HelloWorld'},
+        {path: '/home', component: 'Home'},
+        {path: '/search_module', component: 'SearchModule', meta:{requireAuth:true }},//true为这个页面需要登录权限
+        {path: '/login', component: 'Login'},
+        {path: '/particles', component: 'Particles'},
+        {path: '/register', component: 'Register'},
+        {path: '/pie_chart', component: 'PieChart'},
+        {path: '*', component: 'NotFound'}
+    ]
 })
 Vue.use(Router)
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (router.app.$cookies.get("username") === "") {
+            next({
+                path: '/login',
+                query: {redirect: to.fullPath} // 把要跳转的地址作为参数传到下一步
+            })
+        } else {
+            next()
+        }
+    } else {
+        if (to.query && to.query.redirect) {
+            if (router.app.$cookies.get("username") !== "") {
+                next({path: to.query.redirect})
+            } else {
+                next()
+            }
+        } else {
+            next() // 确保一定要调用 next()
+        }
+    }
+})
 export default new Router({
     routes,//: [
 //   {
@@ -51,10 +90,10 @@ export default new Router({
 //   {
 //     path: '/about',
 //     name: 'about',
-//     component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue')
+//     component: () => import(/* webpackChunkName: "about" */ '@/views/SearchModule.vue')
 //     //component: About
 //    }//,
 // ],
-  mode: 'history',
-  base: process.env.BASE_URL
+    mode: 'history',
+    base: process.env.BASE_URL
 })

@@ -1,11 +1,9 @@
 const path = require('path')
 const express = require('express')
 const app = express()
-var appData = require('./test.json')
 var apiRoutes = express.Router()
 app.use('/api', apiRoutes)
 
-var test = require('./test.json')
 
 module.exports = {
     publicPath: '/',//new
@@ -15,8 +13,10 @@ module.exports = {
     // eslint-loader 是否在保存的时候检查
     //assetsDir: 'assets',//静态资源目录
     assetsDir: 'dist',
+    assetsDir: 'dist',
     //assetsDir: './dist',
     lintOnSave: false,//是否开启eslint
+    runtimeCompiler: false,
     // use the full build with in-browser compiler?
     // https://vuejs.org/v2/guide/installation.html#Runtime-Compiler-vs-Runtime-only
     //compiler: false,
@@ -83,8 +83,10 @@ module.exports = {
             warning: true,
             errors: true
         },
-        hotOnly: false,
+        // hotOnly: false,
+        hot: true,
         headers: {'X-Requested-With': 'XMLHttpRequest'},
+        disableHostCheck: true,
         // proxy: {
         //     '/api': {
         //         target: 'http://localhost:5000',
