@@ -4,6 +4,7 @@ import HelloWorld from '../components/HelloWorld.vue'
 import Home from '../components/Home.vue'
 import SearchModule from '../components/SearchModule.vue'
 import PieChart from '../components/PieChart.vue'
+import Overview from '../components/Overview.vue'
 import NotFound from '../components/NotFound.vue'
 //
 // const routerOptions = [
@@ -37,6 +38,7 @@ const routerOptions = [
     {path: '/particles', component: 'Particles'},
     {path: '/register', component: 'Register'},
     {path: '/pie_chart', component: 'PieChart'},
+    {path: '/overview', component: 'Overview'},
     {path: '*', component: 'NotFound'}
 ]
 const routes = routerOptions.map(route => {
@@ -54,6 +56,7 @@ const router = new Router({
         {path: '/particles', component: 'Particles'},
         {path: '/register', component: 'Register'},
         {path: '/pie_chart', component: 'PieChart'},
+        {path: '/overview', component: 'Overview'},
         {path: '*', component: 'NotFound'}
     ]
 })

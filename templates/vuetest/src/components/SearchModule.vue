@@ -62,7 +62,7 @@
                 </br>
                 </br>
                 </br>
-                <span>moudle:</span>
+                <span>module:</span>
                 <textarea id="output" name="output" rows="6" cols="37"></textarea>
                 <svg></svg>
             </div>
@@ -88,12 +88,12 @@ export default {
             axios.post(`http://localhost:5000/api/search_module`, params)
                 .then((ret) => {
                     var jsonObj = JSON.parse(JSON.stringify(ret));
-                    console.log(JSON.stringify(jsonObj));debugger
+                    console.log(JSON.stringify(jsonObj));
                     this.info = ret.status
-                    if(ret.data.length ===0){
+                    if(ret.data.length === 0){
                         alert("您的输入有误，请重新输入！")
                     }
-                    else{
+                    else{debugger
                         this.dataset = ret.data
                         var content = document.getElementById("output")
                         content.value = ""
@@ -110,7 +110,7 @@ export default {
         drawPie(){
             document.querySelector('svg').innerHTML = '';
             var svg = d3.select('svg');
-            //debugge
+            debugger
             //var color = d3.schemeCategory10;
             function getColor(idx){
                 var color = ['#A9E2F3', '#58D3F7', '#58ACFA', '#2E9AFE', '#0080FF', '#5858FA', '#AC58FA', '#FA58F4']
