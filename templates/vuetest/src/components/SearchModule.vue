@@ -93,7 +93,7 @@ export default {
                     if(ret.data.length === 0){
                         alert("您的输入有误，请重新输入！")
                     }
-                    else{debugger
+                    else{// debugger
                         this.dataset = ret.data
                         var content = document.getElementById("output")
                         content.value = ""

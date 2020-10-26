@@ -1,14 +1,60 @@
 <template>
-  <div id="map"></div>
+  <el-container style="height: 100%; border: 1px solid #eee">
+    <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+      <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="活动名称">
+          <el-input v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </el-aside>
+
+    <el-container>
+      <el-header style="text-align: right; font-size: 12px">
+        <span>overview</span>
+      </el-header>
+
+      <el-main>
+        <div id="map"></div>
+      </el-main>
+    </el-container>
+
+    <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+      <el-menu :default-openeds="['1']">
+        <el-submenu index="1">
+          <template slot="title"><i class="el-icon-message"></i>导航一</template>
+          <el-menu-item-group>
+            <template slot="title">分组一</template>
+            <el-menu-item index="1-1">选项1</el-menu-item>
+            <el-menu-item index="1-2">选项2</el-menu-item>
+          </el-menu-item-group>
+          <el-menu-item-group title="分组2">
+            <el-menu-item index="1-3">选项3</el-menu-item>
+          </el-menu-item-group>
+          <el-submenu index="1-4">
+            <template slot="title">选项4</template>
+            <el-menu-item index="1-4-1">选项4-1</el-menu-item>
+          </el-submenu>
+        </el-submenu>
+      </el-menu>
+    </el-aside>
+  </el-container>
 </template>
 
 <script>
-import {chinaData} from '../js/china.js'
+import axios from "axios";
+
 export default {
   name: "Overview",
   data() {
     return {
-      map: ""
+      map: "",
+      dataset: [],
+      form: {
+          name: '',
+      }
     }
   },
   mounted() {
@@ -36,90 +82,66 @@ export default {
           // 'http://webrd0{s}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scale=1&style=8'
       ).addTo(this.map);
       //点击地图弹出经纬度
-      this.map.on('click', function (e) {
-        console.log(e);
-        alert('纬度：' + e.latlng.lat + '\n经度：' + e.latlng.lng);
-      });
+      // this.map.on('click', function (e) {
+      //   console.log(e);
+      //   alert('纬度：' + e.latlng.lat + '\n经度：' + e.latlng.lng);
+      // });
       //添加marker
       // let marker = L.marker([23.09, 114.23]).addTo(this.map)
       // //添加marker pp
       // marker.bindPopup("我是popup").openPopup(); // openPopup 是自动打开气泡
+      axios.post(`http://localhost:5000/api/overview`)
+                .then((ret) => {
+                    var jsonObj = JSON.parse(JSON.stringify(ret));
+                    // console.log(JSON.stringify(jsonObj));
+                    this.dataset = ret.data
+                    for(var i = 0; i < this.dataset.length; i++) {
+                      L.marker([this.dataset[i].latitude, this.dataset[i].longitude]).addTo(this.map);
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error.response)
+                })
       //多点过滤
-      var marker = L.marker([31.8963, 117.293]).addTo(this.map);
-      var someFeatures = [{
-        "type": "Feature",
-        "properties": {
-          "name": "Coors Field",
-          "show_on_map": true
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [39.94, 116.33]
-        }
-      }, {
-        "type": "Feature",
-        "properties": {
-          "name": "Busch Field",
-          "show_on_map": false
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [-104.98404, 44.74621]
-        }
-      }];
+      // var marker = L.marker([31.8963, 117.293]).addTo(this.map);
+      // L.marker([39.94, 116.33]).addTo(this.map);
+      // var someFeatures = [{
+      //   "type": "Feature",
+      //   "properties": {
+      //     "show_on_map": false
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [39.94, 116.33]
+      //   }
+      // }, {
+      //   "type": "Feature",
+      //   "properties": {
+      //     "show_on_map": true
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [-104.98404, 44.74621]
+      //   }
+      // }];
+      //
+      // L.geoJSON(someFeatures, {
+      //   filter: function (feature, layer) {
+      //     return feature.properties.show_on_map;
+      //   }
+      // }).addTo(this.map);
 
-      L.geoJSON(someFeatures, {
-        filter: function (feature, layer) {
-          return feature.properties.show_on_map;
-        }
-      }).addTo(this.map);
-      //多点过滤end
-      //设置样式
-      var style = {
-        "color": "#f00", //边框颜色
-        "weight": 3, //边框粗细
-        "opacity": 0.4, //透明度
-        "fillColor": 'transparent', //区域填充颜色
-        "fillOpacity": 0, //区域填充颜色的透明
-      };
-      L.geoJSON(chinaData, {style: style}).addTo(this.map);
-      //中国边界描边 end
-      this.drawBoundary(chinaData.features[0].geometry.coordinates);
     },
-    drawBoundary(blist) {
-      //geojson数据
-      //定义中国东南西北端点，作为第一层
-      var pNW = {lat: 59.0, lng: 73.0};
-      var pNE = {lat: 59.0, lng: 136.0};
-      var pSE = {lat: 3.0, lng: 136.0};
-      var pSW = {lat: 3.0, lng: 73.0};
-      //向数组中添加一次闭合多边形，并将西北角再加一次作为之后画闭合区域的起点
-      var pArray = [];debugger
-      pArray.push(pNW);
-      pArray.push(pSW);
-      pArray.push(pSE);
-      pArray.push(pNE);
-      pArray.push(pNW);
-      //循环添加各闭合区域
-      for (var i = 0; i < blist.length; i++) {
-        var points = [];
-        blist[0][i].forEach(item => {
-          points.push({lat: item[1], lng: item[0]});
-        })
-
-        //将闭合区域加到遮蔽层上，每次添加完后要再加一次西北角作为下次添加的起点和最后一次的终点
-        pArray = pArray.concat(points);
-        pArray.push(pArray[0]);
-      }
-      //添加遮蔽层
-      // var plyall = L.polygon(pArray, {color: 'transparent', fillColor: '#C0C0C0', fillOpacity: 0.9}); //建立多边形覆盖物
-      // plyall.addTo(this.map);
+    onSubmit() {
+      console.log('submit!');
     }
   }
 }
 </script>
 
 <style scoped>
+@import url("//unpkg.com/element-ui@2.13.2/lib/theme-chalk/index.css");
+
 #map {
   width: 100%;
   height: calc(100vh);
@@ -145,5 +167,16 @@ export default {
   left: 200px;
   justify-content: center;
   align-items: center;
+}
+
+.el-header {
+  background-color: #B3C0D1;
+  color: #333;
+  line-height: 60px;
+}
+
+.el-aside {
+  color: #333;
+  text-align: left;
 }
 </style>

@@ -1,3 +1,5 @@
+import decimal
+
 from flask import Flask, make_response, json, jsonify, redirect, url_for, request, render_template
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -11,6 +13,7 @@ import requests
 import pymysql
 import os
 import pdb
+
 data = [
     {"id": 1, "username": "小明", "password": "123", "role": 0, "sex": 0, "telephone": "10086", "address": "北京市海淀区"},
     {"id": 2, "username": "李华", "password": "abc", "role": 1, "sex": 0, "telephone": "10010", "address": "广州市天河区"},
@@ -56,7 +59,7 @@ class RiskModule(db.Model):
                                                                                             repr(self.component_name),
                                                                                             repr(
                                                                                                 self.belonged_equipment)
-                                                                                           )
+                                                                                            )
         # return {"id": repr(self.id), "component_name": repr(self.component_name), "belonged_equipment": repr(self.belonged_equipment)}
 
     def to_json(self):
@@ -64,6 +67,76 @@ class RiskModule(db.Model):
         if "_sa_instance_state" in dict:
             del dict['_sa_instance_state']
         return dict
+
+
+class BuildingTroubleDataConverted(db.Model):
+    __tablename__ = 'building_trouble_dataV2.1_converted'
+    # __abstract__ = True
+    id = db.Column('ID', db.Integer, primary_key=True)
+    project_name = db.Column('项目名称', db.Text)
+    risk_description = db.Column('隐患描述', db.Text)
+    risk_cnt = db.Column('隐患数量', db.Integer)
+    system_name = db.Column('系统名称', db.Text)
+    equipment_name = db.Column('设备名称', db.Text)
+    component_name = db.Column('组件名称', db.Text)
+    risk_position = db.Column('隐患地点/位置', db.Text)
+    risk_level = db.Column('风险等级', db.Integer)
+    area = db.Column('分布区域', db.Text)
+    cause_phase = db.Column('致因阶段', db.Text)
+    risk_picture = db.Column('隐患图片', db.Integer)
+    entered_name = db.Column('录入人姓名', db.Text)
+    state = db.Column('状态', db.Integer)
+    appear_frequency = db.Column('出现频率', db.Text)
+    create_time = db.Column('创建时间', db.Text)
+    related_item = db.Column('相关条款', db.Text)
+    code_number = db.Column('法规编号', db.Text)
+    legislation_name = db.Column('法规名称', db.Text)
+    legislation_content = db.Column('条款内容', db.Text)
+    risk_rate = db.Column('隐患风险等级', db.Text)
+    project_leader = db.Column('项目组长', db.Text)
+    province = db.Column('省份', db.Text)
+    city = db.Column('城市', db.Text)
+    region = db.Column('区域', db.Text)
+    longitude = db.Column('经度', db.Float(asdecimal=False))
+    latitude = db.Column('纬度', db.Float(asdecimal=False))
+    predict_start_time = db.Column('预计开始时间', db.Text)
+    predict_end_time = db.Column('预计结束时间', db.Text)
+    project_implement_state = db.Column('项目执行状态', db.Text)
+    project_check_type = db.Column('项目检查类型', db.Text)
+    belonged_major_name = db.Column('所属专业名称', db.Text)
+    risk_picture1 = db.Column('隐患图片.1', db.Text)
+
+    def __repr__(self):
+        return "location id = {}, longitude = {}, latitude = {}".format(repr(self.id),
+                                                                             repr(self.longitude),
+                                                                             repr(
+                                                                                 self.latitude)
+                                                                             )
+
+    def to_json(self):
+        dict = self.__dict__
+        if "_sa_instance_state" in dict:
+            del dict['_sa_instance_state']
+        return dict
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            return float(o)
+        super(DecimalEncoder, self).default(o)
+
+
+@app.route('/api/overview', methods=['POST'])
+def overview():
+    error = None
+    # DEBUG
+    res = BuildingTroubleDataConverted.query.filter(BuildingTroubleDataConverted.longitude != '').all()
+    # print(res)
+    ret = []
+    for x in res:
+        ret.append(x.to_json())
+    print(ret)
+    return jsonify(ret)
 
 
 @app.route('/api/search_module', methods=['POST'])
