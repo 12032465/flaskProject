@@ -1,15 +1,6 @@
 <template>
   <el-container style="height: 100%; border: 1px solid #eee">
-    <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="活动名称">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
-        </el-form-item>
-      </el-form>
-    </el-aside>
+    <OverviewLeftSide></OverviewLeftSide>
 
     <el-container>
       <el-header style="text-align: right; font-size: 12px">
@@ -21,33 +12,19 @@
       </el-main>
     </el-container>
 
-    <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-      <el-menu :default-openeds="['1']">
-        <el-submenu index="1">
-          <template slot="title"><i class="el-icon-message"></i>导航一</template>
-          <el-menu-item-group>
-            <template slot="title">分组一</template>
-            <el-menu-item index="1-1">选项1</el-menu-item>
-            <el-menu-item index="1-2">选项2</el-menu-item>
-          </el-menu-item-group>
-          <el-menu-item-group title="分组2">
-            <el-menu-item index="1-3">选项3</el-menu-item>
-          </el-menu-item-group>
-          <el-submenu index="1-4">
-            <template slot="title">选项4</template>
-            <el-menu-item index="1-4-1">选项4-1</el-menu-item>
-          </el-submenu>
-        </el-submenu>
-      </el-menu>
-    </el-aside>
+    <OverviewRightSide></OverviewRightSide>
   </el-container>
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
+import dataService from "@/service/dataService";
+import OverviewRightSide from "@/components/OverviewRightSide.vue";
+import OverviewLeftSide from "@/components/OverviewLeftSide.vue";
 
 export default {
   name: "Overview",
+  components: {OverviewLeftSide, OverviewRightSide},
   data() {
     return {
       map: "",
@@ -59,6 +36,14 @@ export default {
   },
   mounted() {
     this.initDate();
+    let _this = this
+    dataService.getLocation(function (records){
+        _this.dataset = records
+        for(var i = 0; i < _this.dataset.length; i++) {debugger
+          let marker = L.marker([_this.dataset[i].latitude, _this.dataset[i].longitude]).addTo(_this.map);
+          marker.bindPopup(_this.dataset[i].city).openPopup(); // openPopup 是自动打开气泡
+        }
+      })
   },
   methods: {
     initDate() {
@@ -90,18 +75,19 @@ export default {
       // let marker = L.marker([23.09, 114.23]).addTo(this.map)
       // //添加marker pp
       // marker.bindPopup("我是popup").openPopup(); // openPopup 是自动打开气泡
-      axios.post(`http://localhost:5000/api/overview`)
-                .then((ret) => {
-                    var jsonObj = JSON.parse(JSON.stringify(ret));
-                    // console.log(JSON.stringify(jsonObj));
-                    this.dataset = ret.data
-                    for(var i = 0; i < this.dataset.length; i++) {
-                      L.marker([this.dataset[i].latitude, this.dataset[i].longitude]).addTo(this.map);
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error.response)
-                })
+      // axios.post(`http://localhost:5000/api/overview`)
+      //           .then((ret) => {
+      //               var jsonObj = JSON.parse(JSON.stringify(ret));
+      //               // console.log(JSON.stringify(jsonObj));
+      //               this.dataset = ret.data
+      //               for(var i = 0; i < this.dataset.length; i++) {
+      //                 L.marker([this.dataset[i].latitude, this.dataset[i].longitude]).addTo(this.map);
+      //               }
+      //           })
+      //           .catch(function (error) {
+      //               console.log(error.response)
+      //           })
+
       //多点过滤
       // var marker = L.marker([31.8963, 117.293]).addTo(this.map);
       // L.marker([39.94, 116.33]).addTo(this.map);
