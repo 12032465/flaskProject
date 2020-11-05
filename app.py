@@ -108,16 +108,17 @@ class BuildingTroubleDataConverted(db.Model):
 
     def __repr__(self):
         return "location id = {}, longitude = {}, latitude = {}".format(repr(self.id),
-                                                                             repr(self.longitude),
-                                                                             repr(
-                                                                                 self.latitude)
-                                                                             )
+                                                                        repr(self.longitude),
+                                                                        repr(
+                                                                            self.latitude)
+                                                                        )
 
     def to_json(self):
         dict = self.__dict__
         if "_sa_instance_state" in dict:
             del dict['_sa_instance_state']
         return dict
+
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
@@ -126,6 +127,7 @@ class DecimalEncoder(json.JSONEncoder):
         super(DecimalEncoder, self).default(o)
 
 
+# overview页面地图部分
 @app.route('/api/overview', methods=['POST'])
 def overview():
     error = None
@@ -137,6 +139,34 @@ def overview():
         ret.append(x.to_json())
     print(ret)
     return jsonify(ret)
+
+
+# overview页面根据项目名称查询
+@app.route('/api/overview_prjname', methods=['POST'])
+def overview_prjname():
+    error = None
+    if request.method == 'POST' and request.form.get("project_name"):
+        datax = request.form.get("project_name")
+        print(datax)
+        return jsonify({'msg': '没问题'})
+    return jsonify({'msg': '出错了'})
+
+
+# overview页面右侧初始化数据加载
+@app.route('/api/overview_right_init', methods=['POST'])
+def overview_right_init():
+    error = None
+    if request.method == 'POST':
+        return jsonify({'msg': '没问题'})
+    return jsonify({'msg': '出错了'})
+
+
+@app.route('/api/land_headquarters', methods=['POST'])
+def land_headquarters():
+    error = None
+    if request.method == 'POST':
+        return jsonify({'msg': '没问题'})
+    return jsonify({'msg': '出错了'})
 
 
 @app.route('/api/search_module', methods=['POST'])

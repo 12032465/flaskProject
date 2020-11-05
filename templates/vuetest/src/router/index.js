@@ -5,6 +5,7 @@ import Home from '../components/Home.vue'
 import SearchModule from '../components/SearchModule.vue'
 import PieChart from '../components/PieChart.vue'
 import Overview from '../components/Overview.vue'
+import LandHeadquartersEHSDataScreen from "../components/LandHeadquartersEHSDataScreen.vue";
 import NotFound from '../components/NotFound.vue'
 //
 // const routerOptions = [
@@ -39,6 +40,7 @@ const routerOptions = [
     {path: '/register', component: 'Register'},
     {path: '/pie_chart', component: 'PieChart'},
     {path: '/overview', component: 'Overview'},
+    {path: '/land_headquarters', component: 'LandHeadquartersEHSDataScreen'},
     {path: '*', component: 'NotFound'}
 ]
 const routes = routerOptions.map(route => {
@@ -57,6 +59,7 @@ const router = new Router({
         {path: '/register', component: 'Register'},
         {path: '/pie_chart', component: 'PieChart'},
         {path: '/overview', component: 'Overview'},
+        {path: '/land_headquarters', component: 'LandHeadquartersEHSDataScreen'},
         {path: '*', component: 'NotFound'}
     ]
 })

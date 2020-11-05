@@ -39,9 +39,10 @@ export default {
     let _this = this
     dataService.getLocation(function (records){
         _this.dataset = records
+        console.log(_this.data)
         for(var i = 0; i < _this.dataset.length; i++) {debugger
           let marker = L.marker([_this.dataset[i].latitude, _this.dataset[i].longitude]).addTo(_this.map);
-          marker.bindPopup(_this.dataset[i].city).openPopup(); // openPopup 是自动打开气泡
+          // marker.bindPopup(_this.dataset[i].city).openPopup(); // openPopup 是自动打开气泡
         }
       })
   },

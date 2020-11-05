@@ -1,13 +1,13 @@
 <template>
   <el-aside width="460px" style="background-color: rgb(238, 241, 246)">
     <el-card class="box-card">
-      <div class="text item">
+      <div id="project_risk_index" class="text item">
         项目危险指数
       </div>
     </el-card>
     <el-row :gutter="12">
       <el-col :span="6">
-        <el-card>
+        <el-card id="fire_index">
           消防指数
         </el-card>
       </el-col>
@@ -90,6 +90,8 @@
 </template>
 
 <script>
+import dataService from "@/service/dataService";
+
 export default {
   name: "OverviewRightSide",
   data() {
@@ -98,9 +100,16 @@ export default {
     }
   },
   methods: {
-    // onSubmit() {
-    //   console.log('submit!');
-    // }
+    GetInitData() {
+      //页面初始化得到数据时并不向后台传任何参数
+      dataService.getInitData(function (records) {
+        alert(records.msg)
+      })
+    }
+  },
+  created() {
+    //页面生成时得到各项非查询显示的数据
+    this.GetInitData();
   }
 }
 </script>

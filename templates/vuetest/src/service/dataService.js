@@ -8,6 +8,7 @@ const dataServerUrl = "http://localhost:5000/api";
 // const dataServerUrl = Config.serverLink == ""? "" : Config.serverLink.substring(0,  Config.serverLink.length - 1);
 const $http = Vue.http;
 
+//overview页面地图部分
 function getLocation(callback){
   const url = `${dataServerUrl}/overview`;
   axios.post(url)
@@ -19,15 +20,37 @@ function getLocation(callback){
        })
 }
 
-function getInitScatter(callback){
-  const url = `${dataServerUrl}/scatter_data`;
-  $http.get(url).then(response => {
+//overview页面根据项目名称查询
+function getProjectName(params, callback){
+  const url = `${dataServerUrl}/overview_prjname`;
+  axios.post(url, params).then(response => {
     callback(response.data)
   }, errResponse => {
     console.log(errResponse)
   })
 }
 
+//overview页面右侧初始化数据加载
+function getInitData(callback){
+  const url = `${dataServerUrl}/overview_right_init`;
+  axios.post(url)
+       .then(response => {
+            callback(response.data)
+       })
+       .catch(error=> {
+            console.log(error)
+       })
+}
+
+//置地总部EHS数据大屏页面
+function getLandHeadquarters(callback){
+  const url = `${dataServerUrl}/land_headquarters`
+  $http.get(url).then(response => {
+    callback(response.data)
+  }, errResponse => {
+    console.log(errResponse)
+  })
+}
 
 function getTestScatterPlot(callback){
   const url = `${dataServerUrl}/testscatterplot`
@@ -164,11 +187,13 @@ function getSubgroupStats(mid, selectFeatures, selectUnits, r_len,  dif_type, ca
 
 export default{
   getLocation,
+  getProjectName,
+  getInitData,
+  getLandHeadquarters,
   getFeatureValues,
   getTestData,
   getGradientsAndIO,
   getSubgroupStats,
-  getInitScatter,
   getUnitsStats,
   getFeatureStats,
   getAllStats

@@ -1,54 +1,3 @@
-<style scoped>
-	#search_module{
-	    width: 100%;
-	    height: 100%;
-	    position: relative;
-	    background-image: url(../components/particles/bg.jpg);
-	    background-position: 50% 50%;
-	    background-size: cover;
-	    background-repeat: no-repeat;
-	    margin-left: auto;
-	    margin-right: auto;
-	}
-	.search{
-	    z-index: 2;
-        position: absolute;
-        width: 500px;
-        border-radius: 5px;
-        height: 260px;
-        background: white;
-        box-shadow: 0px 0px 5px #333333;
-        top: 50%;
-        left: 50%;
-        margin-top: -300px;
-        //margin-top: -100px;
-        margin-left: -250px;
-        transition: all 1s;
-        -moz-transition: all 1s; /* Firefox 4 */
-        -webkit-transition: all 1s; /* Safari 鍜� Chrome */
-        -o-transition: all 1s; /* Opera */
-	}
-	#searchByName {
-        margin-top: 60px;
-        padding-left: 40px;
-        box-sizing: border-box;
-        color: #333333;
-        margin-bottom: 50px;
-    }
-    #loginOut {
-        text-align: right
-    }
-    svg {
-        height: 318px;
-        width: 460px;
-      /* // display: block;*/
-        margin: 0;
-        z-index: 2
-    }
-    text {
-        fill: #fff;
-    }
-</style>
 <template>
     <div id="search_module">
         <div id="loginOut" v-show = "isLogin">
@@ -107,11 +56,11 @@ export default {
                     console.log(error.response)
                 })
         },
-        drawPie(){
+        drawPie(){// 之前的d3版本是"d3": "^3.4.5",
             document.querySelector('svg').innerHTML = '';
             var svg = d3.select('svg');
             debugger
-            //var color = d3.schemeCategory10;
+            // var color = d3.schemeCategory10;
             function getColor(idx){
                 var color = ['#A9E2F3', '#58D3F7', '#58ACFA', '#2E9AFE', '#0080FF', '#5858FA', '#AC58FA', '#FA58F4']
                 return color[idx % color.length];
@@ -180,3 +129,54 @@ export default {
     }
 }
 </script>
+<style scoped>
+	#search_module{
+	    width: 100%;
+	    height: 100%;
+	    position: relative;
+	    background-image: url(../components/particles/bg.jpg);
+	    background-position: 50% 50%;
+	    background-size: cover;
+	    background-repeat: no-repeat;
+	    margin-left: auto;
+	    margin-right: auto;
+	}
+	.search{
+	    z-index: 2;
+        position: absolute;
+        width: 500px;
+        border-radius: 5px;
+        height: 260px;
+        background: white;
+        box-shadow: 0px 0px 5px #333333;
+        top: 50%;
+        left: 50%;
+        margin-top: -300px;
+        //margin-top: -100px;
+        margin-left: -250px;
+        transition: all 1s;
+        -moz-transition: all 1s; /* Firefox 4 */
+        -webkit-transition: all 1s; /* Safari 鍜� Chrome */
+        -o-transition: all 1s; /* Opera */
+	}
+	#searchByName {
+        margin-top: 60px;
+        padding-left: 40px;
+        box-sizing: border-box;
+        color: #333333;
+        margin-bottom: 50px;
+    }
+    #loginOut {
+        text-align: right
+    }
+    svg {
+        height: 318px;
+        width: 460px;
+      /* // display: block;*/
+        margin: 0;
+        z-index: 2
+    }
+    text {
+        fill: #fff;
+    }
+</style>
